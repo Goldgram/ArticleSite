@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Articles</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="css/normalize.min.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<style id="dynamicStyles" type="text/css"></style>
+</head>
+<body>
+	<div class="contentContainer">
+		<header>
+			<a href="/" class="articleLogo">
+				<img class="floatLeft" src="img/articlelogo.png" alt="article logo"/>
+				<h1 class="floatLeft">
+					Article <br><span class="dynamicMonthText">From Something</span>
+				</h1>
+			</a>
+			<div id="mobileButton" class="noSelectClick floatRight displayNone">
+				<div id="burger1" class="type1_background"></div>
+				<div id="burger2" class="type2_background"></div>
+				<div id="burger3" class="type3_background"></div>
+			</div>
+			<div id="filters" class="floatRight"></div>
+			<div id="stagingArea" class="hidden"></div>
+			<div class="clearBoth"></div>
+		</header>
+
+		<div id="cardContainer"></div>
+		<div class="clearBoth"></div>
+
+		<div id="archive" class="noSelectClick">
+			<div class="background"></div>
+			<div class="button">
+				<img class="icon" src="img/calendarIcon.png" alt="archive icon"/>
+				<div class="title">Archive</div>
+				<div class="clearBoth"></div>
+			</div>
+		</div>
+
+		<div id="feedback" class="noSelectClick">
+			<div class="background"></div>
+			<div class="button">
+				<img class="icon" src="img/feedbackIcon.png" alt="feedback icon"/>
+				<div class="title">Feedback</div>
+				<div class="clearBoth"></div>
+			</div>
+		</div>
+
+		<div class="clearBoth"></div>
+	</div>
+
+	<div id="archiveOverlay" class="miniOverlay">
+		<img class="closeMiniOverlay noSelectClick" src="img/closeButtonLight.png" alt="close archive"/>
+		<div class="clearBoth"></div>
+	</div>
+
+	<div id="feedbackOverlay" class="miniOverlay">
+		<img class="closeMiniOverlay noSelectClick" src="img/closeButtonLight.png" alt="close feedback"/>
+		<div class="clearBoth"></div>
+		<div id="formWarning"></div>
+		<form id="feedbackForm">
+			<label for="feedbackName">Name:</label>
+			<br>
+			<input id="feedbackName" type="text" name="name" placeholder="" required/>
+			<br>
+			<label for="feedbackEmail">Email:</label>
+			<br>
+			<input id="feedbackEmail" type="email" name="email" placeholder="" required/>
+			<br>
+			<label for="feedbackMessage">Feedback:</label>
+			<br>
+			<textarea id="feedbackMessage" name="message" placeholder="" required></textarea>
+			<br>
+			<input id="feedbackSubmit" type="submit" value="Send"/>
+			<div class="clearBoth"></div>
+		</form>
+	</div>
+
+	<div id="mobileFiltersOverlay" class="displayNone">
+		<div id="mobileFiltersArrowContainer">
+			<div id="mobileFiltersArrow" class="floatRight"></div>
+		</div>
+		<div id="mobileFiltersContainer">
+			<div id="mobileFilters"></div>
+		</div>
+	</div>
+
+	<div id="overlay">
+		<div class="previousArticle">
+			<!-- <div class="background"></div> -->
+			<div class="articleButton noSelectClick" articleId="0">
+				<div class="articleTitle"></div>
+				<img src="img/arrowLeft.png" alt="arrow left"/>
+				<div class="clearBoth"></div>
+			</div>
+		</div>
+		<div class="overlayCenter">
+			<div class="overlayCenterContent">
+				<a href="/" class="articleLogo">
+					<img class="floatLeft" src="img/articlelogo.png" alt="article logo"/>
+					<h1 class="floatLeft">
+						Article <br><span class="dynamicMonthText">From Something</span>
+					</h1>
+				</a>
+				<img class="closeOverlay" src="img/closeButtonDark.png" alt="close article"/>
+				<div class="clearBoth"></div>
+				<div class="articleType"></div>
+				<div class="title"></div>
+				<div class="content"></div>
+			</div>
+		</div>
+		<div class="nextArticle">
+			<!-- <div class="background"></div> -->
+			<div class="articleButton noSelectClick" articleId="0">
+				<div class="articleTitle"></div>
+				<img src="img/arrowRight.png" alt="arrow right"/>
+				<div class="clearBoth"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="loadingMask">
+		<div id="loadingText">Loading...</div>
+		<img id="loadingPoll" src="img/loading.gif" alt="loading bar"/>
+		<img id="warningIcon" src="img/warningIcon.png" alt="warning Icon"/>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="testData.js"></script>
+	<script src="js/index.js"></script>
+</body>
+</html>
