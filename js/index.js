@@ -1,8 +1,8 @@
 // add a new string to the top of this list for each new article
 var archives = [
-  "2019-February",
-  "2019-January",
-  "2018-December"
+  "2019-December",
+  "2019-November",
+  "2018-October"
 ];
 // The first string is considered the current batch
 var archiveDefault = archives[0];
@@ -11,21 +11,21 @@ var archiveDefault = archives[0];
 //   title - A presentation title to be added in the menu and section headers
 //   color - A color association with articles of this type
 var articleFilters = {
-  "all"  : {class:"all", tag:"all", title:"All", color:"#FDD600"},
-  "type1": {class:"type1", tag:"social", title:"Social", color:"#FF5003"},
-  "type2": {class:"type2", tag:"whatsup", title:"What's Happening", color:"#FFAFD8"},// retired tag
-  "type3": {class:"type3", tag:"cognitive", title:"Cognitive", color:"#5AAAFA"},
-  "type4": {class:"type4", tag:"analytics", title:"Analytics", color:"#8CD211"},
-  "type5": {class:"type5", tag:"careers", title:"Careers", color:"#99DFD7"},// retired tag
-  "type6": {class:"type6", tag:"education", title:"Education", color:"#CDA7E4"},// retired tag
-  "type7": {class:"type7", tag:"security", title:"Security", color:"#000088"},
-  "type8": {class:"type8", tag:"cloud", title:"Cloud", color:"#75F1CF"},
-  "type9": {class:"type9", tag:"mobile", title:"Mobile", color:"#FF0000"},
-  "type10": {class:"type10", tag:"iot", title:"Internet of Things", color:"#FEB1B1"},// retired tag
-  "type11": {class:"type11", tag:"general", title:"General News", color:"#FE339B"},
-  "type12": {class:"type12", tag:"commerce", title:"Commerce", color:"#00B4A0"},
-  "type13": {class:"type13", tag:"innovation", title:"Innovation", color:"#9855D4"},
-  "type14": {class:"type14", tag:"watson", title:"Watson", color:"#4216FF"}
+  "all"  : { tag:"all", title:"All", color:"#FDD600" },
+  "sun": { tag:"sun", title:"Sun", color:"#FF5003" },
+  "moon": { tag:"moon", title:"Moon", color:"#FFAFD8" },
+  // "type3": {class:"type3", tag:"cognitive", title:"Cognitive", color:"#5AAAFA"},
+  // "type4": {class:"type4", tag:"analytics", title:"Analytics", color:"#8CD211"},
+  // "type5": {class:"type5", tag:"careers", title:"Careers", color:"#99DFD7"},// retired tag
+  // "type6": {class:"type6", tag:"education", title:"Education", color:"#CDA7E4"},// retired tag
+  // "type7": {class:"type7", tag:"security", title:"Security", color:"#000088"},
+  // "type8": {class:"type8", tag:"cloud", title:"Cloud", color:"#75F1CF"},
+  // "type9": {class:"type9", tag:"mobile", title:"Mobile", color:"#FF0000"},
+  // "type10": {class:"type10", tag:"iot", title:"Internet of Things", color:"#FEB1B1"},// retired tag
+  // "type11": {class:"type11", tag:"general", title:"General News", color:"#FE339B"},
+  // "type12": {class:"type12", tag:"commerce", title:"Commerce", color:"#00B4A0"},
+  // "type13": {class:"type13", tag:"innovation", title:"Innovation", color:"#9855D4"},
+  // "type14": {class:"type14", tag:"watson", title:"Watson", color:"#4216FF"}
 };
 var articles, currentTagType, articleIdByTags, currentArchive;
 var loadingMarker = 0;
@@ -84,7 +84,7 @@ function addFilterSelected(tag) {
 function filterBy(tag){
   currentTagType = tag;
   addFilterSelected(tag);
-  if (articleFilters.all.class===tag) {
+  if (articleFilters.all.tag===tag) {
     $("#cardContainer .cardItem").removeClass("displayNone filtering");
   } else {
     $("#cardContainer .cardItem").addClass("displayNone filtering");
@@ -101,13 +101,11 @@ function hideAndClearOverLays() {
   $("#feedbackForm").show();
 }
 
-function findTagClass(tags){
-  if(!tags) { return ""; }
-  for (var i = 0; i < tags.length; i++) {
-    for (var key in articleFilters) {
-      if (articleFilters[key].tag===tags[i].slug){
-        return articleFilters[key].class;
-      }
+function findTagClass(tag){
+  // if(!tag) { return ""; }
+  for (var key in articleFilters) {
+    if (articleFilters[key].tag === tag){
+      return articleFilters[key].tag;
     }
   }
   return "";
@@ -178,11 +176,11 @@ function getUrlParameter(sParam) {
   }
 }
 
-function articleComparator(a, b){
-  var tag1 = a.order;
-  var tag2 = b.order;
-  return ((tag1 < tag2) ? -1 : ((tag1 > tag2) ? 1 : 0));
-}
+// function articleComparator(a, b){
+//   var tag1 = a.order;
+//   var tag2 = b.order;
+//   return ((tag1 < tag2) ? -1 : ((tag1 > tag2) ? 1 : 0));
+// }
 
 function pushTagIndex(tag, articleId) {
   if (!articleIdByTags[tag]) {
@@ -218,20 +216,14 @@ function appendCard(id, article, cardLayoutCount) {
     return "";
   }
   // get the array of tags, if there are no tags then we ignore the article
-  var tags = (article.terms && article.terms.post_tag) ? article.terms.post_tag : "";
-  if(!tags) {
-    console.log("no tags found");
-    console.log(article);
-    return "";
-  }
-  // if there is a no_display tag then we also ignore the article
-  if(tags.indexOf("no_display") > -1) {
-    console.log("article has no display tag");
+  // var tag = article.tag;
+  if(!article.tag) {
+    console.log("no tag found");
     console.log(article);
     return "";
   }
   // get tag class, if there are no tags then we ignore the article
-  var tagClass = findTagClass(tags);
+  var tagClass = findTagClass(article.tag);
   if(!tagClass) {
     console.log("no recognised tag");
     console.log("tags: "+JSON.stringify(tags));
@@ -239,23 +231,24 @@ function appendCard(id, article, cardLayoutCount) {
     return "";
   }
   // build the index arrays for each tag (to be used in the article overlay)
-  pushTagIndex(articleFilters.all.class, id);
+  pushTagIndex(articleFilters.all.tag, id);
   pushTagIndex(tagClass, id);
   // If a featured image is not found default to a placeholder image
   var imgSrc = "";
-  if (article.featured_image) {
-    imgSrc = article.featured_image.source;
+  if (article.url) {
+    imgSrc = article.url;
   } else {
     console.log("no image source found");
     console.log(article);
     return "";
   }
-  var content = stripHTML(article.content);
-  content = content.replace("&nbsp;", " ");
-  var time = calReadingTime(content);
-  var longTitle = stripHTML(article.title);
+  // var content = stripHTML(article.content);
+  // content = content.replace("&nbsp;", " ");
+  // var time = calReadingTime(content);
+  // var longTitle = stripHTML(article.title);
+  var longTitle = article.title;
   var shortTitle = multiLineElipses(longTitle, 98);
-  var shortContent = multiLineElipses(content, 106);
+  var shortContent = multiLineElipses(article.content, 106);
   var cardType = "";
   var additionalClasses = "";
   // 0 1l 2
@@ -285,7 +278,7 @@ function appendCard(id, article, cardLayoutCount) {
     newCard += "</div>";
     newCard += "<div class='cardContent'>";
       newCard += "<img class='clockImage' src='img/clock.png'/>";
-      newCard += "<div class='readingTime'>"+time+"</div>";
+      // newCard += "<div class='readingTime'>"+time+"</div>";
       newCard += "<div class='largeTitle'>"+longTitle+"</div>";
       newCard += "<div class='title'>"+shortTitle+"</div>";
       newCard += "<div class='content'>"+shortContent+"</div>";
@@ -311,12 +304,12 @@ function renderCards() {
 function createFilterStyle(){
   var string = "";
   for (var tagClass in articleIdByTags) {
-    string += "#filters ."+articleFilters[tagClass].class+"_link { border-bottom: 2px solid "+articleFilters[tagClass].color+"; }";
-    string += "#filters ."+articleFilters[tagClass].class+"_link.selected { background-color: "+articleFilters[tagClass].color+"; }";
-    string += "#mobileFilters .filterItem div."+articleFilters[tagClass].class+"_link { border: 2px solid "+articleFilters[tagClass].color+"; }";
-    string += "#mobileFilters .filterItem div."+articleFilters[tagClass].class+"_link.selected { background-color: "+articleFilters[tagClass].color+" !important; }";
-    string += "."+articleFilters[tagClass].class+"_background { background-color: "+articleFilters[tagClass].color+" !important; }";
-    string += "#overlay."+articleFilters[tagClass].class+"_border .overlayCenter { border-color: "+articleFilters[tagClass].color+" !important; }";
+    string += "#filters ."+articleFilters[tagClass].tag+"_link { border-bottom: 2px solid "+articleFilters[tagClass].color+"; }";
+    string += "#filters ."+articleFilters[tagClass].tag+"_link.selected { background-color: "+articleFilters[tagClass].color+"; }";
+    string += "#mobileFilters .filterItem div."+articleFilters[tagClass].tag+"_link { border: 2px solid "+articleFilters[tagClass].color+"; }";
+    string += "#mobileFilters .filterItem div."+articleFilters[tagClass].tag+"_link.selected { background-color: "+articleFilters[tagClass].color+" !important; }";
+    string += "."+articleFilters[tagClass].tag+"_background { background-color: "+articleFilters[tagClass].color+" !important; }";
+    string += "#overlay."+articleFilters[tagClass].tag+"_border .overlayCenter { border-color: "+articleFilters[tagClass].color+" !important; }";
   }
   $("#dynamicStyles").html(string);
 }
@@ -325,7 +318,7 @@ function renderNavigationBurger() {
   if (Object.keys(articleIdByTags).length > 3) {
     var bunNumber = 1;
     for (var key in articleIdByTags) {
-      if (key !== articleFilters.all.class) {
+      if (key !== articleFilters.all.tag) {
         $("#burger"+bunNumber).removeClass().addClass(key+"_background");
         bunNumber++;
         if (bunNumber > 3) {
@@ -341,12 +334,12 @@ function getFilterItemString(tagClass) {
 }
 
 function buildNavString(type) {
-  if (type===articleFilters.all.class) {
+  if (type===articleFilters.all.tag) {
     return getFilterItemString(type);
   }
   var string = "";
   for (var tagClass in articleIdByTags) {
-    if (tagClass!==articleFilters.all.class) {
+    if (tagClass!==articleFilters.all.tag) {
       string += getFilterItemString(tagClass);
     }
   }
@@ -354,7 +347,7 @@ function buildNavString(type) {
 }
 
 function renderNavigation() {
-  var startString = buildNavString(articleFilters.all.class);
+  var startString = buildNavString(articleFilters.all.tag);
   var endString = buildNavString();
   $("#stagingArea").html(startString+endString);
   var headerSpace = $("header").width()-230;
@@ -409,7 +402,7 @@ function init() {
   $("#loadingMask").show();
   $("#cardContainer").html("");
   articles = [];
-  currentTagType = articleFilters.all.class;
+  currentTagType = articleFilters.all.tag;
   articleIdByTags = {};
   // Get value of archive parameter (if any)
   currentArchive = getUrlParameter("archive");
@@ -420,12 +413,49 @@ function init() {
   var settings = {
     "async": true,
     "crossDomain": true,
-    "url": "https://api.nasa.gov/planetary/apod?api_key=l6IaSJLtLshfUdApvNXC3dzhATcE1w8c6bstBY28&concept_tags=true&date=[2018-10-10,2019-10-10]",
+    "url": "https://api.nasa.gov/planetary/apod?api_key=l6IaSJLtLshfUdApvNXC3dzhATcE1w8c6bstBY28&concept_tags=true&date=2019-10-10",
     "method": "GET"
   }
 
+  // interface Item {
+  //   id: number
+  //   tag: string
+  //   mediaType: "video" | "image"
+  //   title: string
+  //   subTitle: string
+  //   url: string
+  //   content: string
+  //   viewTitle: string
+  //   viewImage: string
+  //   viewContent: string
+  //   copyright: string
+  // }
+
+  function potdToItem(data, index) {
+    return {
+      id: index,
+      tag: index % 2 === 1 ? "moon" : "sun",
+      mediaType: data.media_type,
+      title: data.title,
+      subTitle: data.date,
+      url: data.url,
+      content: data.explanation,
+      hdUrl: data.hdurl,
+      copyright: data.copyright
+    };
+  }
+
   $.ajax(settings).done (function(data) {
-    articles = testData;
+    const array = [
+      data,
+      data,
+      data,
+      data,
+      data,
+      data
+    ];
+
+    articles = array.map(potdToItem);
     // articles = data.sort(articleComparator);
     if (articles.length) {
       startUp();
